@@ -44,20 +44,19 @@ namespace Website.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add()
+        public IActionResult Add([Bind("Name","Description", "StartDate", "DueDate")]Models.ProjectModel Project)
         {
-            Project = new ProjectModel();
             if (!(UserController.sessionState)|| UserController.role != "Admin")
             {
                 return RedirectToAction("Login", "User");
             }
-         //   Project.AdminId = UserController.userId;
             if (ModelState.IsValid)
             {
+                Project.AdminId = UserController.userId;
+        
                 _db.Projects.Add(Project);
                 _db.SaveChanges();
             }
-            Project = new ProjectModel();
             return View(Project);
         }
     }

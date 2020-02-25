@@ -60,7 +60,7 @@ namespace Website.Controllers
             return View(tasks);
         }*/
 
-        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "Comments", "ProjectId", "UserId")]Models.TaskModel addTask)
+        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "Comments", "ProjectId", "UserId")]Models.TaskModel Task)
         {
             if (!(UserController.sessionState))
             {
@@ -68,7 +68,7 @@ namespace Website.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Tasks.Add(addTask);
+                _db.Tasks.Add(Task);
                 _db.SaveChanges();
                 return Redirect("Index");
             }
