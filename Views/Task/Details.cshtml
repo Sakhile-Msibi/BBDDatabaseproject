@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Website.Models.TaskModel>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TaskModel</h4>
+    <hr />
+    @foreach (var item in Model)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TaskName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.TaskName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TaskDescription)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.TaskDescription)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.StartDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DueDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.DueDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Progress)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Progress)
+                @Html.DisplayName("%")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Flags)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Flags)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Comments)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Comments)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ProjectId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.ProjectId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.UserId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.UserId)
+            </dd>
+        </dl>
+
+    <div>
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.TaskId">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+    }
+</div>
+

@@ -1,0 +1,29 @@
+@model List<Website.Models.UserModel>
+
+<h2>Users created</h2>
+
+<table class="table">
+    <tr>
+        <th>Email</th>
+        <th>Name</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(val => item.Email)
+                @Html.DisplayFor(val => item.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(val => item.FullName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(val => item.Role)
+                @Html.DisplayFor(val => item.UserId)
+            </td>
+        </tr>
+    }
+</table>

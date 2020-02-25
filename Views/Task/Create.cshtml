@@ -1,0 +1,81 @@
+﻿@model Website.Models.TaskModel
+
+@{
+    ViewData["Title"] = "Add A Task";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TaskName" class="control-label"></label>
+                <input asp-for="TaskName" class="form-control"/>
+                <span asp-validation-for="TaskName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskDescription" class="control-label"></label>
+                <input asp-for="TaskDescription" class="form-control" />
+                <span asp-validation-for="TaskDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DueDate" class="control-label"></label>
+                <input asp-for="DueDate" class="form-control" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Progress" class="control-label"></label>
+                <input asp-for="Progress" class="form-control" />
+                <span asp-validation-for="Progress" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flags" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Flags,
+                     new SelectList(new List<SelectListItem>
+                  {
+                      new SelectListItem { Text = "In Progress" , Value = "In Progress"},
+                      new SelectListItem { Text = "Stuck", Value = "Stuck" },
+                      new SelectListItem { Text = "Complete", Value = "Complete" }
+                  },
+                    "Value",
+                    "Text",
+                    "True"), new { @class = "form-control" })
+                <span asp-validation-for="Flags" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <input asp-for="Comments" class="form-control" />
+                <span asp-validation-for="Comments" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label"></label>
+                <input asp-for="ProjectId" class="form-control" />
+                <span asp-validation-for="ProjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <input asp-for="UserId" class="form-control" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

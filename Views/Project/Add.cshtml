@@ -1,0 +1,61 @@
+@model Website.Models.ProjectModel
+@{
+    ViewData["Title"] = "Project";
+}
+
+
+
+<br />
+<h2>Add Project</h2>
+<br />
+
+<div class="border container" style="padding:30px;">
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="Name">Project Name</label>
+            </div>
+            <div class="col-6">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="Description">Project Description</label>
+            </div>
+            <div class="col-6">
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="StartDate">Start Date</label>
+            </div>
+            <div class="col-6">
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-3">
+                <label asp-for="DueDate">Due Date</label>
+            </div>
+            <div class="col-6">
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-3 offset-3">
+                <button type="submit" class="btn btn-primary form-control">Create Project</button>
+            </div>
+            <div class="col-3">
+                <a asp-action="Index" class="btn btn-success form-control">View Projects</a>
+            </div>
+        </div>
+    </form>
+</div>

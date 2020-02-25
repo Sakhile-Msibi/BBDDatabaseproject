@@ -1,0 +1,35 @@
+@model List<Website.Models.UserModel>;
+
+@{
+    ViewData["Title"] = "Person";
+    int i = 0;
+}
+
+@foreach (UserModel item in Model)
+{
+    @if (item != null)
+    {
+<h2>@ViewData["Title"]</h2>
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model[i].FullName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model[i].FullName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model[i].UserId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model[i].UserId)
+        </dd>
+    </dl>
+</div>
+    i++;
+@* <div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+</div> *@
+    }
+}

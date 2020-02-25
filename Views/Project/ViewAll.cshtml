@@ -1,0 +1,57 @@
+@model List<Website.Models.ProjectModel>;
+
+@{
+    @using Website.Controllers;
+    ViewData["Title"] = "Project";
+}
+
+<div class="text-center">
+    
+    <h1 class="display-4">Projects Page</h1>
+    
+    <div class="col-2">
+        @if(UserController.role == "Admin")
+        {
+        <a asp-action="Add" class="btn btn-success form-control">Create Project</a>
+        }
+    </div>
+
+</div>
+<hr/>
+
+
+@foreach (ProjectModel item in Model)
+{
+    @if (item != null)
+    {
+<div>
+    <dl class="dl-horizontal">
+        
+        <h5>Project Name</h5>
+        <dd>
+            @Html.DisplayFor(model => item.Name)
+        </dd>
+        
+        <h5>Decription</h5>
+        <dd>
+            @Html.DisplayFor(model => item.Description)
+        </dd>
+
+        <h5>Start Date</h5>
+        <dd>
+            @Html.DisplayFor(model => item.StartDate)
+        </dd>
+
+        <h5>Due Date</h5>
+        <dd>
+            @Html.DisplayFor(model => item.DueDate)
+        </dd>
+
+        <p>
+            <a asp-controller="Task" asp-action="Index" class="btn btn-info" asp-route-id="@item.Id" >View Tasks</a>
+        </p>
+        <hr style="border: 1px solid black;">
+    </dl>
+</div>
+    }
+}

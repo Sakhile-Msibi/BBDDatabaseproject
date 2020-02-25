@@ -1,0 +1,29 @@
+@model Website.Models.UserModel
+
+<form asp-action="Login">
+    <div class="form-horizontal">
+        <input type="hidden" asp-for="UserId">
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <div class="col-md-10">
+                <input type="email" asp-for="Email" class="form-control" placeholder="email">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <div class="col-md-10">
+                <input type="password" asp-for="Password" class="form-control" placeholder="password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Login" class="btn btn-primary">
+            </div>
+        </div>
+        
+    </div>
+</form>
