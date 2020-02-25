@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bbdnet2232\\Desktop\\CSTeam_management\\Website.csproj": {}
+    "C:\\Users\\bbdnet2210\\Desktop\\NewDatabaseProject\\Website.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bbdnet2232\\Desktop\\CSTeam_management\\Website.csproj": {
+    "C:\\Users\\bbdnet2210\\Desktop\\NewDatabaseProject\\Website.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bbdnet2232\\Desktop\\CSTeam_management\\Website.csproj",
+        "projectUniqueName": "C:\\Users\\bbdnet2210\\Desktop\\NewDatabaseProject\\Website.csproj",
         "projectName": "Website",
-        "projectPath": "C:\\Users\\bbdnet2232\\Desktop\\CSTeam_management\\Website.csproj",
-        "packagesPath": "C:\\Users\\bbdnet2232\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bbdnet2232\\Desktop\\CSTeam_management\\obj\\",
+        "projectPath": "C:\\Users\\bbdnet2210\\Desktop\\NewDatabaseProject\\Website.csproj",
+        "packagesPath": "C:\\Users\\bbdnet2210\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bbdnet2210\\Desktop\\NewDatabaseProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\bbdnet2232\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\bbdnet2210\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -47,6 +47,10 @@
             "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.5.1, )"
             }
           },
           "imports": [
