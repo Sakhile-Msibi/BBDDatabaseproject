@@ -75,24 +75,69 @@ GO
 CREATE PROCEDURE InsertTasks(@taskName varchar(100), @taskDescription varchar(200), @startDate datetime, @dueDate datetime,@progress int, @comments varchar(200), 
 @projectId int, @userId int)
 AS
-BEGIN
+BEGIN TRY
+BEGIN TRANSACTION
 INSERT INTO Tasks (TasksName,TasksDescription,StartDate,DueDate,Progress,Comments,ProjectID,UserID) VALUES ( @taskName,@taskDescription,@startDate,@dueDate,@progress,@comments,@projectId,@userId)
-END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_SEVERITY() AS ErrorSeverity,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+IF @@TRANCOUNT > 0
+	ROLLBACK TRANSACTION
+END CATCH;
+IF @@TRANCOUNT > 0
+	COMMIT TRANSACTION
 GO
+
 --Add a stored procedure for projects
 CREATE PROCEDURE InsertProject(@projectName varchar(100), @projectDescription varchar(200), @startDate datetime, @dueDate datetime, @adminId int)
 AS
-BEGIN
+BEGIN TRY
+BEGIN TRANSACTION
 INSERT INTO Projects (ProjectName,ProjectDescription,StartDate,DueDate,AdminID) VALUES (@projectName,@projectDescription,@startDate,@dueDate,@adminId)
-END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_SEVERITY() AS ErrorSeverity,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+IF @@TRANCOUNT > 0
+	ROLLBACK TRANSACTION
+END CATCH;
+IF @@TRANCOUNT > 0
+	COMMIT TRANSACTION
 GO
 
 --Add a stored procedure for user
 CREATE PROCEDURE InsertUser(@email varchar(100), @password varchar(50), @fullName varchar(100), @admin bit)
 AS
-BEGIN
+BEGIN TRY
+BEGIN TRANSACTION
 INSERT INTO Users (Email,HashedPassword,FullName,AdminUser) VALUES (@email,@password,@fullName,@admin)
-END
+END TRY
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_SEVERITY() AS ErrorSeverity,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+IF @@TRANCOUNT > 0
+	ROLLBACK TRANSACTION
+END CATCH;
+IF @@TRANCOUNT > 0
+	COMMIT TRANSACTION
 GO
 
 --Add unique constraint for emails
@@ -101,7 +146,40 @@ ADD CONSTRAINT  CheckIfEmailIsUnique UNIQUE (Email)
 GO
 
 --Function to return all completed tasks for specific project and users.
+CREATE VIEW userCompletedTasks
+AS 
+SELECT TasksName 
+FROM Tasks
+WHERE Progress = 100
+GO
 
---Creating a view to see completed tasks by users.
-CREATE VIEW userProjectsAndTasks AS SELECT ProjectName FROM Projects WHERE AdminID = ProjectID
+--Creating a view to see incompleted tasks by users.
+CREATE VIEW userIncompletedTasks
+AS 
+SELECT TasksName 
+FROM Tasks
+WHERE Progress != 100
+GO
+
+
+
+-- Aggregade function that conts all the tasks which are completed for a specific project
+CREATE FUNCTION CountCompletedTasks (@ProjectID int, @UserID int)
+RETURNS TABLE
+AS
+RETURN SELECT TasksName
+FROM Tasks
+WHERE Progress = 100  AND ProjectID = @ProjectID AND UserID = @UserID
+GO
+
+CREATE FUNCTION CountIncompleteTasks (@ProjectID int, @UserID int)
+RETURNS TABLE
+AS
+RETURN SELECT TasksName
+FROM Tasks
+WHERE Progress != 100  AND ProjectID = @ProjectID AND UserID = @UserID
+GO
+
+SELECT  COUNT(*) FROM CountCompletedTasks(5, 8)
+GO
 
