@@ -7,7 +7,7 @@
 <h1>All Tasks</h1>
 
 <p>
-    @if (UserController.role == "Admin")
+    @if (UserController.admin == true)
     {
         <a class="btn btn-primary" asp-action="Create">Create New</a>
     }
@@ -35,9 +35,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Progress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Flags)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comments)
@@ -74,9 +71,6 @@
                         @Html.DisplayName("%")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Flags)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.Comments)
                     </td>
                     <td>
@@ -88,7 +82,7 @@
                     <td>
                         <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.TaskId">Edit</a> |
                         <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.TaskId">Details</a> |
-                        @if (UserController.role == "Admin")
+                        @if (UserController.admin == true)
                         {
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.TaskId">Delete</a>
                         }

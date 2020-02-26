@@ -11,12 +11,14 @@ namespace Website.Controllers
     public class TaskController : Controller
     {
         private readonly MyDbContext _db;
+        private readonly DatabaseModel new_db;
 
         [BindProperty]
         public TaskModel Task { get; set; }
         public TaskController (MyDbContext db)
         {
             _db = db;
+            new_db = new DatabaseModel();
         }
 
         public async Task<IActionResult> Index(string searchString, string id)
@@ -60,7 +62,7 @@ namespace Website.Controllers
             return View(tasks);
         }*/
 
-        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "Comments", "ProjectId", "UserId")]Models.TaskModel Task)
+        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Comments", "ProjectId", "UserId")]Models.TaskModel Task)
         {
             if (!(UserController.sessionState))
             {
@@ -68,8 +70,9 @@ namespace Website.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Tasks.Add(Task);
-                _db.SaveChanges();
+                new_db.addTask(Task);
+                //_db.Tasks.Add(Task);
+                //_db.SaveChanges();
                 return Redirect("Index");
             }
             return View("Create");

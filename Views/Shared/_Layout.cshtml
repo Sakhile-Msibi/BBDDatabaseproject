@@ -39,7 +39,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
                         </li>
-                        if (UserController.role == "Admin") { //if admin
+                        if (UserController.admin == true) { //if admin
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="RegisterMember">(Add TeamMembers)</a>
                             </li>

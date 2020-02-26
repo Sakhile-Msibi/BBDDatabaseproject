@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Website.Models;
-using Website.StaticData;
+//using Website.StaticData;
 
 namespace Website.Controllers
 {
     public class ProjectController : Controller
     {
         private readonly MyDbContext _db;
+        private readonly DatabaseModel new_db;
 
         public ProjectModel Project {get; set;}
         public ProjectController(MyDbContext db)
         {
                 _db = db;
+                new_db = new DatabaseModel();
         }
 
         public IActionResult Index()
@@ -28,7 +30,8 @@ namespace Website.Controllers
             }
             List<ProjectModel> project = new List<ProjectModel>();
             for(int i = 1; i < 11; i++){
-                project.Add(_db.Projects.FirstOrDefault(p => p.Id == i));
+                //project.Add(_db.Projects.FirstOrDefault(p => p.Id == i));
+                project.Add(new_db.getProject(i));
             }
             return View("ViewAll", project);
         }
@@ -46,7 +49,7 @@ namespace Website.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add([Bind("Name","Description", "StartDate", "DueDate")]Models.ProjectModel Project)
         {
-            if (!(UserController.sessionState)|| UserController.role != "Admin")
+            if (!(UserController.sessionState)|| UserController.admin != true)
             {
                 return RedirectToAction("Login", "User");
             }
@@ -54,8 +57,9 @@ namespace Website.Controllers
             {
                 Project.AdminId = UserController.userId;
         
-                _db.Projects.Add(Project);
-                _db.SaveChanges();
+                new_db.addProject(Project);
+                //_db.Projects.Add(Project);
+                //_db.SaveChanges();
             }
             return View(Project);
         }

@@ -7,20 +7,23 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Website.Models;
-using Website.StaticData;
+//using Website.StaticData;
 
 namespace Website.Controllers
 {
     public class UserController : Controller
     {
         public static bool sessionState { get; private set;}
-        public static string role { get; private set;}
+        public static bool admin { get; private set;}
         public static int userId { get; private set;}
-        private readonly MyDbContext _db;
+        //private readonly MyDbContext _db;
+
+        private readonly DatabaseModel new_db;
 
         public UserController(MyDbContext db)
         {
-            _db = db;
+            //_db = db;
+            new_db = new DatabaseModel();
         }
         public IActionResult Register()
         {
@@ -28,23 +31,24 @@ namespace Website.Controllers
             return View(user);
         }
         //this is only for testing
-        public IActionResult test()
+        /* public IActionResult test()
         {
-            var val = _db.Users.ToList();
+            var val = new_db.GetUsers().ToList();
             return View(val);
-        }
+        } */
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register([Bind("UserId", "Email", "FullName", "Password", "Role")]UserModel register)
+        public IActionResult Register([Bind("UserId", "Email", "FullName", "Password", "Admin")]UserModel register)
         {
-             if (ModelState.IsValid && !UserModel.EmailExists(register.Email, _db))
+             if (ModelState.IsValid) //&& !UserModel.EmailExists(register.Email, _db))
             {
                 //create
                 string hashed_password = SecurePasswordHasherHelper.Hash(register.Password);
                 register.Password = hashed_password;
 
-                _db.Users.Add(register);
-                _db.SaveChanges();
+                new_db.addUser(register);
+                /* _db.Users.Add(register);
+                _db.SaveChanges(); */
 
                 return Redirect("Login");
             }
@@ -58,16 +62,17 @@ namespace Website.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterMember([Bind("UserId", "Email", "FullName", "Password", "Role")]UserModel register)
+        public IActionResult RegisterMember([Bind("UserId", "Email", "FullName", "Password", "Admin")]UserModel register)
         {
-            if (/* ModelState.IsValid &&  */!UserModel.EmailExists(register.Email, _db))
+            if (ModelState.IsValid) //&&  */!UserModel.EmailExists(register.Email, _db))
             {
                 //create
                 string hashed_password = SecurePasswordHasherHelper.Hash(register.Password);
                 register.Password = hashed_password;
 
-                _db.Users.Add(register);
-                _db.SaveChanges();
+                new_db.addUser(register);
+                //_db.Users.Add(register);
+                //_db.SaveChanges();
 
                 return Redirect("../Home/");
             }
@@ -87,18 +92,17 @@ namespace Website.Controllers
                 return View();
 
             string Email = login.Email;
-            var user = _db.Users.FirstOrDefault(p => p.Email == Email);
-
+            //find user in database
+            var user = new_db.findUser(Email);
             if (user == null)
                 return View("Register");
-            
             string userPassword = user.Password;
             
             if(SecurePasswordHasherHelper.Verify(login.Password,userPassword))
             {
                 HttpContext.Session.SetInt32("ID", user.UserId);
                 sessionState = true;
-                role = user.Role;
+                admin = user.Admin;
                 userId = user.UserId;
                 Console.WriteLine("id" + user.UserId);
                 return Redirect("../Home/");
@@ -110,15 +114,16 @@ namespace Website.Controllers
         {
             HttpContext.Session.Clear();
             sessionState = false;
-            role = "";
+            admin = false;
             return Redirect("Login");
         }
-        public IActionResult Details(int? id)
+       /*  public IActionResult Details(int? id)
         {
+            //nyeh?
             List<UserModel> people = new List<UserModel>();
             people.Add(_db.Users.FirstOrDefault(p => p.UserId == HttpContext.Session.GetInt32("ID")));
             return View(people);
-        }
+        } */
     }
     
 }

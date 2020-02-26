@@ -10,7 +10,7 @@
     <h1 class="display-4">Projects Page</h1>
     
     <div class="col-2">
-        @if(UserController.role == "Admin")
+        @if(UserController.admin == true)
         {
         <a asp-action="Add" class="btn btn-success form-control">Create Project</a>
         }

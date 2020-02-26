@@ -1,4 +1,4 @@
-using Website.Models;
+/* using Website.Models;
 using System.Collections.Generic;
 namespace Website.StaticData
 {
@@ -19,4 +19,4 @@ namespace Website.StaticData
             new UserModel() { UserId = 3, Email = "email@test.default", Password = SecurePasswordHasherHelper.Hash("test"), FullName = "Slave", Role = "dev" },
         };
     }
-}
+} */

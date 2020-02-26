@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Website.Models;
-using Website.StaticData;
+//using Website.StaticData;
 
 namespace Website.Controllers
 {
     public class HomeController : Controller
     {
         
-        private readonly MyDbContext _db;
+        //private readonly MyDbContext _db;
         private readonly DatabaseModel new_db;
 
-        public HomeController(MyDbContext db)
+        public HomeController()
         {
-            _db = db;
+            //_db = db;
             new_db = new DatabaseModel();
         }
         public IActionResult Index()
@@ -36,7 +36,7 @@ namespace Website.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult UseDefaults()
+        /* public IActionResult UseDefaults()
         {
             List<UserModel> defaultUser = UserData.People;
             foreach(UserModel Dude in defaultUser) {
@@ -54,6 +54,6 @@ namespace Website.Controllers
             }
             _db.SaveChanges();
             return View();
-        }
+        } */
     }
 }

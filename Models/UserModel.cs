@@ -17,13 +17,13 @@ namespace Website.Models
         public string Password { get; set; }
         [Required]
         public string FullName { get; set; }
-        public string Role { get; set; }
+        public bool Admin { get; set; }
 
-        public static bool EmailExists(string Email, MyDbContext _db)
+        /* public static bool EmailExists(string Email, MyDbContext _db)
         {
             var user = _db.Users.FirstOrDefault(p => p.Email == Email);
             if (user == null) return false;
             return true;
-        }
+        } */
     }
 }

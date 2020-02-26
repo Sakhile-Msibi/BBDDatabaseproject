@@ -11,7 +11,16 @@ namespace Website.Models
 
         public int AdminId {get; set;}
         public string Description { get; set; }
+
+        
+        [DataType(DataType.Date)]
+        [Display(Name = "Start Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Due Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true)]
         public DateTime DueDate { get; set; }
     }
 }

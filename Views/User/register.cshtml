@@ -29,11 +29,11 @@
         
         
         <div class="form-group">
-            <label asp-for="Role"></label>
-            @Html.DropDownListFor(model => model.Role,
+            <label asp-for="Admin"></label>
+            @Html.DropDownListFor(model => model.Admin,
             new SelectList(new List<SelectListItem>{
-                new SelectListItem {Text = "Admin", Value="Admin"},
-                new SelectListItem {Text = "Developer", Value="Developer"},
+                new SelectListItem {Text = "Admin", Value="true"},
+                new SelectListItem {Text = "Developer", Value="false"},
                 },
                 "Value",
                 "Text",

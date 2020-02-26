@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/* using System.Collections.Generic;
 using System;
 using Website.Models;
 
@@ -20,4 +20,4 @@ namespace Website.StaticData
             new ProjectModel() { Id = 2, Name = "ManTeam", Description = "Project 2", StartDate = new DateTime(1995, 1, 1), DueDate = new DateTime(1995, 1, 1) },
         };
     }
-}
+} */
