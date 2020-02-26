@@ -242,20 +242,21 @@ IF @@TRANCOUNT > 0
 GO
 
 --Stored procedure for updating data
-CREATE PROCEDURE UpdateProject(@ProjectID int,@ColumnName varchar(100),@Param varchar(100))
+CREATE PROCEDURE UpdateTask(@TaskID int,@ColumnName varchar(100),@Param varchar(100))
 AS
 BEGIN 
-DECLARE @sql nvarchar(max);
-UPDATE Projects 
-SET @ColumnName = @Param 
-WHERE ProjectID = @ProjectID
-EXEC sp_executesql @sql
+IF(@ColumnName = 'TaskName')
+UPDATE Tasks SET TasksName = @Param WHERE TaskID = @TaskID
+IF(@ColumnName = 'TasksDescription')
+UPDATE Tasks SET TasksDescription = @Param WHERE TaskID = @TaskID
+IF(@ColumnName = 'Comments')
+UPDATE Tasks SET Comments = @Param WHERE TaskID = @TaskID
+IF(@ColumnName = 'StartDate')
+UPDATE Tasks SET StartDate = CONVERT(datetime,@Param) WHERE TaskID = @TaskID
+IF(@ColumnName = 'DueDate')
+UPDATE Tasks SET DueDate = CONVERT(datetime,@Param) WHERE TaskID = @TaskID
+IF(@ColumnName = 'Progress')
+UPDATE Tasks SET Progress = CONVERT(int,@Param) WHERE TaskID = @TaskID
 END
 GO
 
-UPDATE Projects 
-SET ProjectDescription = 'GGGGG'
-WHERE ProjectID = 6
-
-EXEC  UpdateProject 6, ProjectDescription, 'FFFFFFFFFFF'
-SELECT * FROM PROJECTS
