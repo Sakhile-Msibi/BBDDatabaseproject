@@ -161,6 +161,19 @@ FROM Tasks
 WHERE Progress != 100
 GO
 
+--View that view all the projects on the database
+CREATE VIEW ViewAllProjects
+AS
+SELECT ProjectName,ProjectDescription,StartDate,DueDate,ProjectID
+FROM PROJECTS
+GO
+
+--View that view all the tasks
+CREATE VIEW ViewAllTasks
+AS
+SELECT TasksName,TasksDescription,StartDate,DueDate,Progress,Comments,ProjectID,UserID
+FROM Tasks
+GO
 
 
 -- Aggregade function that conts all the tasks which are completed for a specific project
@@ -183,3 +196,66 @@ GO
 SELECT  COUNT(*) FROM CountCompletedTasks(5, 8)
 GO
 
+--Stored procedure for deleting a column
+CREATE PROCEDURE DeleteProject(@ProjectID int)
+AS
+BEGIN TRY
+BEGIN TRANSACTION
+DELETE  FROM Tasks WHERE ProjectID = @ProjectID
+DELETE  FROM Projects WHERE ProjectID = @ProjectID
+END TRY
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_SEVERITY() AS ErrorSeverity,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+IF @@TRANCOUNT > 0
+	ROLLBACK TRANSACTION
+END CATCH;
+IF @@TRANCOUNT > 0
+	COMMIT TRANSACTION
+GO
+
+--Stored procedure for deleting a column
+CREATE PROCEDURE DeleteTasks(@TasksID int)
+AS
+BEGIN TRY
+BEGIN TRANSACTION
+DELETE  FROM Tasks WHERE TaskID = @TasksID
+END TRY
+BEGIN CATCH
+SELECT
+ERROR_NUMBER() AS ErrorNumber,
+ERROR_SEVERITY() AS ErrorSeverity,
+ERROR_STATE() AS ErrorState,
+ERROR_PROCEDURE() AS ErrorProcedure,
+ERROR_LINE() AS ErrorLine,
+ERROR_MESSAGE() AS ErrorMessage;
+IF @@TRANCOUNT > 0
+	ROLLBACK TRANSACTION
+END CATCH;
+IF @@TRANCOUNT > 0
+	COMMIT TRANSACTION
+GO
+
+--Stored procedure for updating data
+CREATE PROCEDURE UpdateProject(@ProjectID int,@ColumnName varchar(100),@Param varchar(100))
+AS
+BEGIN 
+DECLARE @sql nvarchar(max);
+UPDATE Projects 
+SET @ColumnName = @Param 
+WHERE ProjectID = @ProjectID
+EXEC sp_executesql @sql
+END
+GO
+
+UPDATE Projects 
+SET ProjectDescription = 'GGGGG'
+WHERE ProjectID = 6
+
+EXEC  UpdateProject 6, ProjectDescription, 'FFFFFFFFFFF'
+SELECT * FROM PROJECTS
