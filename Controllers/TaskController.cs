@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Models;
+using Website.StaticData;
 
 namespace Website.Controllers
 {
@@ -60,7 +61,7 @@ namespace Website.Controllers
             return View(tasks);
         }*/
 
-        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "Comments", "ProjectId", "UserId")]Models.TaskModel Task)
+        public IActionResult Create([Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "ProjectId", "Comments")]Models.TaskModel Task)
         {
             if (!(UserController.sessionState))
             {
@@ -68,8 +69,11 @@ namespace Website.Controllers
             }
             if (ModelState.IsValid)
             {
+                Task.UserId = UserController.userId;
                 _db.Tasks.Add(Task);
                 _db.SaveChanges();
+                Console.WriteLine("UserId " + Task.UserId);
+                 Console.WriteLine("projectId " + Task.ProjectId);
                 return Redirect("Index");
             }
             return View("Create");

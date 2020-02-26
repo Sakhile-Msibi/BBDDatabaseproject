@@ -14,12 +14,12 @@ namespace Website.Controllers
     {
         
         private readonly MyDbContext _db;
-        private readonly DatabaseModel new_db;
+      //  private readonly DatabaseModel new_db;
 
         public HomeController(MyDbContext db)
         {
             _db = db;
-            new_db = new DatabaseModel();
+        //    new_db = new DatabaseModel();
         }
         public IActionResult Index()
         {

@@ -5,12 +5,13 @@ namespace Website.Models
     public class ProjectModel
     {
         [Key]
-        public int Id { get; set; }
+        public int projectId { get; set; }
+
         [Required]
-        public string Name { get; set; }
+        public string projectName { get; set; }
 
         public int AdminId {get; set;}
-        public string Description { get; set; }
+        public string projectDescription { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime DueDate { get; set; }
     }

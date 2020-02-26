@@ -29,12 +29,17 @@
         
         <h5>Project Name</h5>
         <dd>
-            @Html.DisplayFor(model => item.Name)
+            @Html.DisplayFor(model => item.projectName)
         </dd>
         
         <h5>Decription</h5>
         <dd>
-            @Html.DisplayFor(model => item.Description)
+            @Html.DisplayFor(model => item.projectDescription)
+        </dd>
+
+        <h5>Project Id</h5>
+        <dd>
+            @Html.DisplayFor(model => item.projectId)
         </dd>
 
         <h5>Start Date</h5>
@@ -48,7 +53,7 @@
         </dd>
 
         <p>
-            <a asp-controller="Task" asp-action="Index" class="btn btn-info" asp-route-id="@item.Id" >View Tasks</a>
+            <a asp-controller="Task" asp-action="Index" class="btn btn-info" asp-route-id="@item.projectId" >View Tasks</a>
         </p>
         <hr style="border: 1px solid black;">
     </dl>

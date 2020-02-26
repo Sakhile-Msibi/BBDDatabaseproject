@@ -28,7 +28,7 @@ namespace Website.Controllers
             }
             List<ProjectModel> project = new List<ProjectModel>();
             for(int i = 1; i < 11; i++){
-                project.Add(_db.Projects.FirstOrDefault(p => p.Id == i));
+                project.Add(_db.Projects.FirstOrDefault(p => p.projectId == i));
             }
             return View("ViewAll", project);
         }
@@ -44,8 +44,9 @@ namespace Website.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add([Bind("Name","Description", "StartDate", "DueDate")]Models.ProjectModel Project)
+        public IActionResult Add([Bind("projectName","projectDescription", "projectId", "StartDate", "DueDate")]Models.ProjectModel Project)
         {
+            
             if (!(UserController.sessionState)|| UserController.role != "Admin")
             {
                 return RedirectToAction("Login", "User");
@@ -53,10 +54,13 @@ namespace Website.Controllers
             if (ModelState.IsValid)
             {
                 Project.AdminId = UserController.userId;
-        
+                Console.WriteLine("Project Id " + Project.projectId);
+                Console.WriteLine("Project name " + Project.projectName);
                 _db.Projects.Add(Project);
                 _db.SaveChanges();
             }
+            
+
             return View(Project);
         }
     }

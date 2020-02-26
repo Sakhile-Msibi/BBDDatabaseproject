@@ -16,8 +16,8 @@ namespace Website.StaticData
 
         private static List<ProjectModel> listOfProjects = new List<ProjectModel>()
         {
-            new ProjectModel() { Id = 1, Name = "TeamMan", Description = "Project ONE", StartDate = new DateTime(1995, 1, 1), DueDate = new DateTime(1995, 1, 1) },
-            new ProjectModel() { Id = 2, Name = "ManTeam", Description = "Project 2", StartDate = new DateTime(1995, 1, 1), DueDate = new DateTime(1995, 1, 1) },
+            new ProjectModel() { projectId = 1, projectName = "TeamMan", projectDescription = "Project ONE", StartDate = new DateTime(1995, 1, 1), DueDate = new DateTime(1995, 1, 1) },
+            new ProjectModel() { projectId = 2, projectName = "ManTeam", projectDescription = "Project 2", StartDate = new DateTime(1995, 1, 1), DueDate = new DateTime(1995, 1, 1) },
         };
     }
 }
