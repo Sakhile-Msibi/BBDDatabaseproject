@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Website.CustomAttributes;
+
 namespace Website.Models
 {
     public class ProjectModel
@@ -15,11 +17,13 @@ namespace Website.Models
         
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
+        [CheckStartDateAttribute]
         [DisplayFormat(ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Due Date")]
+        [CheckDueDateAttribute]
         [DisplayFormat(ApplyFormatInEditMode = true)]
         public DateTime DueDate { get; set; }
     }
