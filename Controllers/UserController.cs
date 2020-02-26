@@ -58,11 +58,12 @@ namespace Website.Controllers
 
         public IActionResult RegisterMember()
         {
-            return View();
+            var user = new UserModel();
+            return View(user);
         }
 
         [HttpPost]
-        public IActionResult RegisterMember([Bind("UserId", "Email", "FullName", "Password", "Admin")]UserModel register)
+        public IActionResult RegisterMember([Bind("UserId", "Email", "FullName", "Password","Admin")]UserModel register)
         {
             if (ModelState.IsValid) //&&  */!UserModel.EmailExists(register.Email, _db))
             {

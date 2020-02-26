@@ -4,6 +4,7 @@
 <form asp-action="RegisterMember">
     <div class="form-horizontal">
         <input type="hidden" asp-for="UserId">
+        <input type="hidden" asp-for="Admin" value="false">
         <div class="form-group">
             <label asp-for="Email"></label>
             <div class="col-md-10">
@@ -29,7 +30,7 @@
         </div>
         
         
-        <div class="form-group">
+        @* <div class="form-group">
             <label asp-for="Admin"></label>
             @Html.DropDownListFor(model => model.Admin,
             new SelectList(new List<SelectListItem>{
@@ -40,7 +41,7 @@
                 "True"
                 ),
                 new { @class = "form-group"})
-        </div>
+        </div> *@
         
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
