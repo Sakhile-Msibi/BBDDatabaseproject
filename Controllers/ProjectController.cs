@@ -24,16 +24,12 @@ namespace Website.Controllers
 
         public IActionResult Index()
         {
+            //project view go here????
             if (!(UserController.sessionState))
             {
                 return RedirectToAction("Login", "User");
             }
-            List<ProjectModel> project = new List<ProjectModel>();
-            for(int i = 1; i < 11; i++){
-                //project.Add(_db.Projects.FirstOrDefault(p => p.Id == i));
-                project.Add(new_db.getProject(i));
-            }
-            return View("ViewAll", project);
+            return View("ViewAll", new_db.allProjects());
         }
 
         public IActionResult Add(int? id)

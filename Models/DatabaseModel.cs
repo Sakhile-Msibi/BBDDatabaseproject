@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 namespace Website.Models
@@ -27,7 +28,10 @@ namespace Website.Models
         private static string insertTaskProcedure = "CREATE OR ALTER PROCEDURE InsertTasks(@taskName varchar(100), @taskDescription varchar(200), @startDate datetime, @dueDate datetime,@progress int, @comments varchar(200), @projectId int, @userId int) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Tasks (TasksName,TasksDescription,StartDate,DueDate,Progress,Comments,ProjectID,UserID) VALUES ( @taskName,@taskDescription,@startDate,@dueDate,@progress,@comments,@projectId,@userId) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
         private static string deleteTaskProcedure = "CREATE OR ALTER PROCEDURE DeleteTasks(@taskID int) AS BEGIN TRY BEGIN TRANSACTION DELETE FROM Tasks WHERE TaskID = @taskID COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
         private static string insertProjectProcedure = "CREATE OR ALTER PROCEDURE InsertProject(@projectName varchar(100), @projectDescription varchar(200), @startDate datetime, @dueDate datetime, @adminId int) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Projects (ProjectName,ProjectDescription,StartDate,DueDate,AdminID) VALUES (@projectName,@projectDescription,@startDate,@dueDate,@adminId) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
-        private static string insertUserProcedure= "CREATE OR ALTER PROCEDURE InsertUser(@email varchar(100), @password varchar(500), @fullName varchar(100), @admin bit) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Users (Email,HashedPassword,FullName,AdminUser) VALUES (@email,@password,@fullName,@admin) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
+        private static string insertUserProcedure = "CREATE OR ALTER PROCEDURE InsertUser(@email varchar(100), @password varchar(500), @fullName varchar(100), @admin bit) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Users (Email,HashedPassword,FullName,AdminUser) VALUES (@email,@password,@fullName,@admin) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
+        private static string taskView = "CREATE OR ALTER VIEW ViewAllTasks AS SELECT * FROM Tasks";
+        private static string projectView = "CREATE OR ALTER VIEW ViewAllProjects AS SELECT * FROM Projects";
+        
         public DatabaseModel()
         {
             SqlCommand createDB = new SqlCommand("If(db_id(N'TeamManagement') IS NULL) BEGIN CREATE DATABASE TeamManagement; END;", preSqlCon);
@@ -37,6 +41,8 @@ namespace Website.Models
             SqlCommand createDeleteTaskProcedure = new SqlCommand(deleteTaskProcedure, sqlCon);
             SqlCommand createInsertProjectProcedure = new SqlCommand(insertProjectProcedure, sqlCon);
             SqlCommand createInsertUserProcedure = new SqlCommand(insertUserProcedure, sqlCon);
+            SqlCommand createTaskView = new SqlCommand(taskView, sqlCon);
+            SqlCommand createProjectView = new SqlCommand(projectView, sqlCon);
 
             preSqlCon.Open();
             createDB.ExecuteNonQuery();
@@ -45,16 +51,16 @@ namespace Website.Models
             {
                 checkDates.ExecuteNonQuery();
             }
-            catch (Exception e)
+            catch
             {
-                System.Console.WriteLine(e);
             }
             createTables.ExecuteNonQuery();
             createInsertTaskProcedure.ExecuteNonQuery();
             createDeleteTaskProcedure.ExecuteNonQuery();
             createInsertProjectProcedure.ExecuteNonQuery();
             createInsertUserProcedure.ExecuteNonQuery();
-            
+            createTaskView.ExecuteNonQuery();
+            createProjectView.ExecuteNonQuery();
         }
 
         public void addUser(UserModel register)
@@ -131,7 +137,7 @@ namespace Website.Models
         public ProjectModel getProject(int i)
         {
             ProjectModel project = new ProjectModel();
-            SqlCommand findByID = new SqlCommand("SELECT * FROM dbo.Projects WHERE projectID = @pid", sqlCon);
+            SqlCommand findByID = new SqlCommand("SELECT * FROM ViewAllProjects WHERE projectID = @pid", sqlCon);
             findByID.Parameters.AddWithValue("@pid",i);
 
             using (SqlDataReader reader = findByID.ExecuteReader())
@@ -157,7 +163,7 @@ namespace Website.Models
         public TaskModel getTask(int i)
         {
             TaskModel task = new TaskModel();
-            SqlCommand findByID = new SqlCommand("SELECT * FROM dbo.Tasks WHERE taskID = @tid", sqlCon);
+            SqlCommand findByID = new SqlCommand("SELECT * FROM ViewAllTasks WHERE taskID = @tid", sqlCon);
             findByID.Parameters.AddWithValue("@tid",i);
 
             using (SqlDataReader reader = findByID.ExecuteReader())
@@ -183,5 +189,65 @@ namespace Website.Models
             return task;
         }
 
+        public void updateTask(TaskModel task)
+        {
+            SqlCommand cmdEdit = new SqlCommand("UPDATE ViewAllTasks SET TasksName = @taskName, TasksDescription = @taskDesc, Comments = @comments, StartDate = @startDate, DueDate = @dueDate, Progress = @progress WHERE TaskID = @taskID", sqlCon);
+            cmdEdit.Parameters.AddWithValue("@taskName",task.TaskName);
+            cmdEdit.Parameters.AddWithValue("@taskDesc",task.TaskDescription);
+            cmdEdit.Parameters.AddWithValue("@startDate",task.StartDate);
+            cmdEdit.Parameters.AddWithValue("@dueDate",task.DueDate);
+            cmdEdit.Parameters.AddWithValue("@progress",task.Progress);
+            cmdEdit.Parameters.AddWithValue("@comments",task.Comments);
+            cmdEdit.Parameters.AddWithValue("@taskID",task.TaskId);
+            cmdEdit.ExecuteNonQuery();
+        }
+
+        public List<ProjectModel> allProjects()
+        {
+            int projectCount = 0;
+            int i = 1;
+            List<ProjectModel> project = new List<ProjectModel>();
+            ProjectModel tempProject;
+            SqlCommand total = new SqlCommand("SELECT count(projectID) FROM ViewAllProjects", sqlCon);
+            using (SqlDataReader reader = total.ExecuteReader())
+            {
+                reader.Read();
+                projectCount = reader.GetInt32(0);
+                reader.Close();
+            }
+            while(project.Count < projectCount)
+            {
+                tempProject = getProject(i);
+
+                if(tempProject != null)
+                    project.Add(tempProject);
+                i++;
+            }
+            return project;
+        }
+
+        public List<TaskModel> allTasks()
+        {
+            int taskCount = 0;
+            int i = 1;
+            List<TaskModel> task = new List<TaskModel>();
+            TaskModel tempTask;
+            SqlCommand total = new SqlCommand("SELECT count(taskID) FROM ViewAllTasks", sqlCon);
+            using (SqlDataReader reader = total.ExecuteReader())
+            {
+                reader.Read();
+                taskCount = reader.GetInt32(0);
+                reader.Close();
+            }
+            while(task.Count < taskCount)
+            {
+                tempTask = getTask(i);
+
+                if(tempTask != null)
+                    task.Add(tempTask);
+                i++;
+            }
+            return task;
+        }
     }
 }

@@ -10,37 +10,38 @@ namespace Website.Controllers
 {
     public class TaskController : Controller
     {
-        private readonly MyDbContext _db;
+        //private readonly MyDbContext _db;
         private readonly DatabaseModel new_db;
 
         [BindProperty]
         public TaskModel Task { get; set; }
-        public TaskController (MyDbContext db)
+        public TaskController ()
         {
-            _db = db;
+            //_db = db;
             new_db = new DatabaseModel();
         }
 
-        public async Task<IActionResult> Index(string searchString, string id)
+        public IActionResult Index(string searchString, string id)
         {
             if (!(UserController.sessionState))
             {
                 return RedirectToAction("Login", "User");
             }
 
-            var tasks = from m in _db.Tasks
-                        select m;
+//task views go here
+            var tasks = new_db.allTasks();
+            IEnumerable<TaskModel> filteredTasks = tasks;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                tasks = tasks.Where(s => s.TaskName.Contains(searchString));
+                filteredTasks = tasks.Where(s => s.TaskName.Contains(searchString));
             }
             if (!String.IsNullOrEmpty(id))
             {
                 try
                 {
                     var convertToNum = Int32.Parse(id);
-                    tasks = tasks.Where(s => s.ProjectId.Equals(convertToNum));
+                    filteredTasks = tasks.Where(s => s.ProjectId.Equals(convertToNum));
                 }
                 catch
                 {
@@ -49,7 +50,7 @@ namespace Website.Controllers
                 
             }
 
-            return View(await tasks.ToListAsync());
+            return View(filteredTasks.ToList());
         }
 
         /*public IActionResult Index()
@@ -95,7 +96,7 @@ namespace Website.Controllers
             return View(tasks);
         } */
 
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (!(UserController.sessionState))
             {
@@ -107,7 +108,10 @@ namespace Website.Controllers
                 return NotFound();
             }
 
-            var task = await _db.Tasks.FindAsync(id);
+            //var task = await _db.Tasks.FindAsync(id);
+            int tid = (int) id;
+            var task = new_db.getTask(tid);
+
             if (task == null)
             {
                 return NotFound();
@@ -155,12 +159,13 @@ namespace Website.Controllers
 
         private bool TaskExists(int id)
         {
-            return _db.Tasks.Any(e => e.TaskId == id);
-        }
+            return new_db.getTask(id) == null ? false : true;
+            //return _db.Tasks.Any(e => e.TaskId == id);
+        } 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Flags", "Comments", "ProjectId", "UserId")] TaskModel task)
+        public IActionResult Edit(int id, [Bind("TaskId", "TaskName","TaskDescription", "StartDate", "DueDate", "Progress", "Comments")] TaskModel task)
         {
             if (!(UserController.sessionState))
             {
@@ -176,18 +181,15 @@ namespace Website.Controllers
             {
                 try
                 {
-                    _db.Update(task);
-                    await _db.SaveChangesAsync().ConfigureAwait(false);
+                    new_db.updateTask(task);
+                    //_db.Update(task);
+                    //await _db.SaveChangesAsync().ConfigureAwait(false);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch
                 {
                     if (!TaskExists(task.TaskId))
                     {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
                     }
                 }
                 return RedirectToAction(nameof(Index));

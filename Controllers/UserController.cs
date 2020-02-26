@@ -104,7 +104,7 @@ namespace Website.Controllers
                 sessionState = true;
                 admin = user.Admin;
                 userId = user.UserId;
-                Console.WriteLine("id" + user.UserId);
+                //Console.WriteLine("id" + user.UserId);
                 return Redirect("../Home/");
             }
             return View();
