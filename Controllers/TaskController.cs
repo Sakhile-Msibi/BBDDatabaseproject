@@ -79,7 +79,7 @@ namespace Website.Controllers
 
         }
 
-        public IActionResult Details(int? id)
+        /* public IActionResult Details(int? id)
         {
             List<TaskModel> tasks = new List<TaskModel>();
             if (!id.HasValue)
@@ -93,7 +93,7 @@ namespace Website.Controllers
 
             tasks.Add(_db.Tasks.FirstOrDefault(p => p.TaskId == id.Value));
             return View(tasks);
-        }
+        } */
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -115,7 +115,7 @@ namespace Website.Controllers
             return View(task);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (!(UserController.sessionState))
             {
@@ -128,8 +128,9 @@ namespace Website.Controllers
                 return NotFound();
             }
 
-            var task = await _db.Tasks
-                .FirstOrDefaultAsync(m => m.TaskId == id);
+            int tid = (int) id;
+            //var task = await _db.Tasks.FirstOrDefaultAsync(m => m.TaskId == id);
+            var task = new_db.getTask(tid);
             if (task == null)
             {
                 return NotFound();
@@ -139,15 +140,16 @@ namespace Website.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var task = await _db.Tasks.FindAsync(id);
+            //var task = await _db.Tasks.FindAsync(id);
             if (!(UserController.sessionState))
             {
                 return RedirectToAction("Login", "User");
             }
-            _db.Tasks.Remove(task);
-            await _db.SaveChangesAsync();
+            //_db.Tasks.Remove(task);
+            new_db.deleteTask(id);
+            //await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

@@ -25,6 +25,7 @@ namespace Website.Models
                             " IF (NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'CheckIfEmailIsUnique')) BEGIN ALTER TABLE Users ADD CONSTRAINT CheckIfEmailIsUnique UNIQUE (Email); END";
         private static string udfCheckTasksDates = "CREATE FUNCTION udfCheckTasksDates(@projectID int,@param varchar(50)) RETURNS DateTime AS BEGIN DECLARE @Result datetime IF(@param = 'StartDate') SET @Result = (SELECT StartDate FROM Projects where projectID = @projectID) ELSE IF(@param = 'DueDate') SET @Result = (SELECT DueDate FROM Projects where projectID = @projectID) RETURN @Result END";
         private static string insertTaskProcedure = "CREATE OR ALTER PROCEDURE InsertTasks(@taskName varchar(100), @taskDescription varchar(200), @startDate datetime, @dueDate datetime,@progress int, @comments varchar(200), @projectId int, @userId int) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Tasks (TasksName,TasksDescription,StartDate,DueDate,Progress,Comments,ProjectID,UserID) VALUES ( @taskName,@taskDescription,@startDate,@dueDate,@progress,@comments,@projectId,@userId) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
+        private static string deleteTaskProcedure = "CREATE OR ALTER PROCEDURE DeleteTasks(@taskID int) AS BEGIN TRY BEGIN TRANSACTION DELETE FROM Tasks WHERE TaskID = @taskID COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
         private static string insertProjectProcedure = "CREATE OR ALTER PROCEDURE InsertProject(@projectName varchar(100), @projectDescription varchar(200), @startDate datetime, @dueDate datetime, @adminId int) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Projects (ProjectName,ProjectDescription,StartDate,DueDate,AdminID) VALUES (@projectName,@projectDescription,@startDate,@dueDate,@adminId) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
         private static string insertUserProcedure= "CREATE OR ALTER PROCEDURE InsertUser(@email varchar(100), @password varchar(500), @fullName varchar(100), @admin bit) AS BEGIN TRY BEGIN TRANSACTION INSERT INTO Users (Email,HashedPassword,FullName,AdminUser) VALUES (@email,@password,@fullName,@admin) COMMIT TRANSACTION END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION END CATCH; IF @@TRANCOUNT > 0 COMMIT TRANSACTION";
         public DatabaseModel()
@@ -33,6 +34,7 @@ namespace Website.Models
             SqlCommand checkDates = new SqlCommand(udfCheckTasksDates, sqlCon);
             SqlCommand createTables = new SqlCommand(tables, sqlCon);
             SqlCommand createInsertTaskProcedure = new SqlCommand(insertTaskProcedure, sqlCon);
+            SqlCommand createDeleteTaskProcedure = new SqlCommand(deleteTaskProcedure, sqlCon);
             SqlCommand createInsertProjectProcedure = new SqlCommand(insertProjectProcedure, sqlCon);
             SqlCommand createInsertUserProcedure = new SqlCommand(insertUserProcedure, sqlCon);
 
@@ -49,6 +51,7 @@ namespace Website.Models
             }
             createTables.ExecuteNonQuery();
             createInsertTaskProcedure.ExecuteNonQuery();
+            createDeleteTaskProcedure.ExecuteNonQuery();
             createInsertProjectProcedure.ExecuteNonQuery();
             createInsertUserProcedure.ExecuteNonQuery();
             
@@ -77,6 +80,14 @@ namespace Website.Models
             cmdTask.Parameters.AddWithValue("@comments",newTask.Comments);
             cmdTask.Parameters.AddWithValue("@projectid",newTask.ProjectId);
             cmdTask.Parameters.AddWithValue("@userid",newTask.UserId);
+            cmdTask.ExecuteScalar();
+        }
+
+        public void deleteTask(int id)
+        {
+            SqlCommand cmdTask = new SqlCommand("dbo.DeleteTasks", sqlCon);
+            cmdTask.CommandType = CommandType.StoredProcedure;
+            cmdTask.Parameters.AddWithValue("@taskID",id);
             cmdTask.ExecuteScalar();
         }
 
@@ -141,6 +152,35 @@ namespace Website.Models
                 reader.Close();
             }
             return project;
+        }
+
+        public TaskModel getTask(int i)
+        {
+            TaskModel task = new TaskModel();
+            SqlCommand findByID = new SqlCommand("SELECT * FROM dbo.Tasks WHERE taskID = @tid", sqlCon);
+            findByID.Parameters.AddWithValue("@tid",i);
+
+            using (SqlDataReader reader = findByID.ExecuteReader())
+            {
+                // Call Read before accessing data.
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    task.TaskId = reader.GetInt32(0);
+                    task.TaskName = reader.GetString(1);
+                    task.TaskDescription = reader.GetString(2);
+                    task.StartDate = reader.GetDateTime(3);
+                    task.DueDate = reader.GetDateTime(4);
+                    task.Progress = reader.GetInt32(5);
+                    task.Comments = reader.GetString(6);
+                    task.ProjectId = reader.GetInt32(7);
+                    task.UserId = reader.GetInt32(8);
+                }
+                else
+                    task = null;
+                reader.Close();
+            }
+            return task;
         }
 
     }

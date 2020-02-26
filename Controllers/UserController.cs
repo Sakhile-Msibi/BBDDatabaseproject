@@ -20,7 +20,7 @@ namespace Website.Controllers
 
         private readonly DatabaseModel new_db;
 
-        public UserController(MyDbContext db)
+        public UserController()
         {
             //_db = db;
             new_db = new DatabaseModel();

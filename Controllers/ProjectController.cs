@@ -12,13 +12,13 @@ namespace Website.Controllers
 {
     public class ProjectController : Controller
     {
-        private readonly MyDbContext _db;
+        //private readonly MyDbContext _db;
         private readonly DatabaseModel new_db;
 
         public ProjectModel Project {get; set;}
-        public ProjectController(MyDbContext db)
+        public ProjectController()
         {
-                _db = db;
+                //_db = db;
                 new_db = new DatabaseModel();
         }
 
